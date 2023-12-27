@@ -6,7 +6,7 @@ on:
             - main
 
 env:
-    MODULE_NAME: DSG.Ec.Core
+    MODULE_NAME: DemoModule
 
 jobs:
     publish:

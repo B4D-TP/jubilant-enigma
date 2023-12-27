@@ -1,8 +1,5 @@
 name: Build, Analyze, and Publish
 on:
-    push:
-        branches:
-            - main
     pull_request:
         branches:
             - main
