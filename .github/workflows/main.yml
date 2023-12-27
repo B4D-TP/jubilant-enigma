@@ -11,7 +11,7 @@ env:
     MODULE_NAME: DemoModule
 
 jobs:
-    # compile the module
+    # Build the module
     build:
         name: Build Module
         runs-on: windows-latest
@@ -69,8 +69,8 @@ jobs:
                   name: PSScriptAnalyzer
                   path: ${{github.workspace}}/PSScriptAnalyzerSettings.psd1
 
-    # enforce code quality
-    lint:
+    # Analyze the module
+    analyze:
         name: PSScriptAnalyzer
         runs-on: windows-latest
         needs: build
@@ -84,54 +84,13 @@ jobs:
               run: ls -R
 
             - name: Run PSScriptAnalyzer
-              id: analyze
-              shell: pwsh
-              run: |
-                  $result = Invoke-ScriptAnalyzer -Settings ./PSScriptAnalyzerSettings.psd1 -Path . -Recurse | Select-Object -Property RuleName, Severity, ScriptPath, Line, Column
-                  if (-not $result) {
-                    exit 0
-                  }
-                  $result
-                  Write-Output "PSScriptAnalyzer failed with $($result.count) errors"
-                  exit 1
-
-    # run pester tests
-    test:
-        name: Pester Tests
-        runs-on: ${{ matrix.os }}
-        needs: build
-        strategy:
-            fail-fast: false
-            matrix:
-                os:
-                    - windows-2019
-                    - windows-2022
-
-        steps:
-            - name: Download artifacts
-              uses: actions/download-artifact@v3
-
-            - name: Display structure of downloaded artifacts
-              run: ls -R
-
-            - name: Install required modules
-              uses: alt3/install-required-modules-action@main
+              uses: microsoft/psscriptanalyzer-action@v1.0
               with:
-                  dataFile: ${{github.workspace}}/RequiredModules/RequiredModules.psd1 # downloaded artifact path
-
-            - uses: PoshCode/Actions/pester@v1
-              with:
-                  pesterVersion: 5.5.0
-                  codeCoveragePath: Modules/${{env.MODULE_NAME}}
-                  moduleUnderTest: ${{env.MODULE_NAME}}
-                  additionalModulePaths: ${{github.workspace}}/Modules
-
-            - name: Upload artifact PesterResults
-              uses: actions/upload-artifact@v3
-              if: matrix.os == 'windows-2022' # only execute on this OS
-              with:
-                  name: PesterResults
-                  path: ${{github.workspace}}/*.xml
+                  path: .\
+                  recurse: true
+                  settings: PSScriptAnalyzerSettings.psd1
+                  ignorePattern: "tests"
+                  output: results.sarif
 
     # -----------------------------------------------------------------------------
     # Publishing stage:
@@ -145,7 +104,7 @@ jobs:
     publish:
         name: Publish
         runs-on: windows-latest
-        needs: [test, lint]
+        needs: [analyze]
         if: ${{ github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, '[release]')}}
 
         steps:
