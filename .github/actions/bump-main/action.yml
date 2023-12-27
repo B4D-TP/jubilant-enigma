@@ -15,7 +15,6 @@ runs:
               path: __main
               ref: main
               fetch-depth: 0 # fetch history for all tags and branches
-              token: ${{ secrets.GITHUB_TOKEN }}
 
         - name: Bump Module Manifest
           shell: pwsh

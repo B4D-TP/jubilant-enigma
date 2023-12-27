@@ -69,7 +69,7 @@ jobs:
                   path: ${{github.workspace}}/PSScriptAnalyzerSettings.psd1
 
     publish:
-        runs-on: ubuntu-latest
+        runs-on: windows-latest
         if: ${{ github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, '[release]')}}
 
         steps:
