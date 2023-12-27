@@ -1,4 +1,4 @@
-name: Build
+name: Build, Analyze, and Publish
 on:
     push:
         branches:
@@ -92,6 +92,11 @@ jobs:
                   ignorePattern: "tests"
                   output: results.sarif
 
+            # Upload the SARIF file generated in the previous step
+            - name: Upload SARIF results file
+              uses: github/codeql-action/upload-sarif@v2
+              with:
+                  sarif_file: results.sarif
     # -----------------------------------------------------------------------------
     # Publishing stage:
     # - is skipped completely UNLESS on the main branch
@@ -127,18 +132,18 @@ jobs:
             - name: Download Artifacts
               uses: actions/download-artifact@v3
 
-            - name: Publish to PSGallery
-              uses: ./.github/actions/psgallery-publisher
-              env:
-                  PSGALLERY_API_KEY: ${{ secrets.PSGALLERY_API_KEY }}
-              with:
-                  modulePath: Modules/${{env.MODULE_NAME}}
-
             - name: Bump Manifest Version on Main
               id: bumpMain
               uses: ./.github/actions/bump-main
               with:
                   artifactPath: Modules/${{env.MODULE_NAME}}
+
+            - name: Publish PowerShell Module
+              uses: natescherer/publish-powershell-action@v1
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  target: packages
+                  path: Modules/${{env.MODULE_NAME}}
 
             - name: Create Github Release
               uses: softprops/action-gh-release@v1
