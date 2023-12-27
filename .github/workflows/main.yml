@@ -1,4 +1,4 @@
-name: Build, Analyze, and Publish
+name: Build, & Analyze
 on:
     pull_request:
         branches:
@@ -39,7 +39,7 @@ jobs:
               uses: PoshCode/actions/build-module@v1
               with:
                   path: ${{github.workspace}}/Source
-                  version: ${{ steps.gitversion.outputs.LegacySemVerPadded }}
+                  version: ${{ steps.gitversion.outputs.semVer }}
                   destination: ${{github.workspace}}/output
 
             - name: Upload artifact Modules
@@ -94,3 +94,31 @@ jobs:
               uses: github/codeql-action/upload-sarif@v2
               with:
                   sarif_file: results.sarif
+    test:
+        name: Pester Tests
+        runs-on: windows-latest
+        needs: build
+        steps:
+            - name: Checkout sources
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            - name: Install required modules
+              uses: alt3/install-required-modules-action@main
+              with:
+                  dataFile: ${{github.workspace}}/Dev/RequiredModules.psd1
+            - name: pester_tests
+              id: pester_tests
+              uses: zyborg/pester-tests-report@v1
+              with:
+                  include_paths: Tests
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  tests_fail_step: true
+                  skip_check_run: true
+            - name: dump test results
+              shell: pwsh
+              run: |
+                  Write-Host 'Total Tests Executed...:  ${{ steps.pester_tests.outputs.total_count }}'
+                  Write-Host 'Total Tests PASSED.....:  ${{ steps.pester_tests.outputs.passed_count }}'
+                  Write-Host 'Total Tests FAILED.....:  ${{ steps.pester_tests.outputs.failed_count }}'
