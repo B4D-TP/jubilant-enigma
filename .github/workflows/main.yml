@@ -51,7 +51,7 @@ jobs:
             - name: Upload artifact PesterTests
               uses: actions/upload-artifact@v3
               with:
-                  name: PesterTests
+                  name: Tests
                   path: ${{github.workspace}}/Tests
 
             - name: Upload artifact RequiredModules
@@ -113,6 +113,7 @@ jobs:
               uses: zyborg/pester-tests-report@v1
               with:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
+                  coverage_paths: ${{github.workspace}}/Source
                   tests_fail_step: true
                   skip_check_run: true
                   report_name: Pester Tests
