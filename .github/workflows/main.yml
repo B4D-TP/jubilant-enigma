@@ -99,22 +99,22 @@ jobs:
         runs-on: windows-latest
         needs: build
         steps:
-            - name: Checkout sources
-              uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
+            - name: Download artifact Modules
+              uses: actions/download-artifact@v4
 
             - name: Install required modules
               uses: alt3/install-required-modules-action@main
               with:
                   dataFile: ${{github.workspace}}/Dev/RequiredModules.psd1
-            - name: pester_tests
-              id: pester_tests
-              uses: zyborg/pester-tests-report@v1
+            - uses: PoshCode/Actions/pester@v1
               with:
-                  github_token: ${{ secrets.GITHUB_TOKEN }}
-                  coverage_paths: ${{github.workspace}}/Source
-                  tests_fail_step: true
-                  skip_check_run: true
-                  report_name: Pester Tests
-                  report_title: Pester Tests
+                  pesterVersion: 5.5.0
+                  codeCoveragePath: Modules/${{env.MODULE_NAME}}
+                  moduleUnderTest: ${{env.MODULE_NAME}}
+                  additionalModulePaths: ${{github.workspace}}/Modules
+
+            - name: Upload artifact PesterResults
+              uses: actions/upload-artifact@v3
+              with:
+                  name: PesterResults
+                  path: ${{github.workspace}}/*.xml
