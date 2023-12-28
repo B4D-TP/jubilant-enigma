@@ -105,6 +105,11 @@ jobs:
             - name: Display folder structure
               run: ls -R
 
+            - name: Import module
+              shell: pwsh
+              run: |
+                  Import-Module -Name ${{github.workspace}}/Modules/${{env.MODULE_NAME}}
+
             - name: Install required modules
               uses: alt3/install-required-modules-action@main
               with:
