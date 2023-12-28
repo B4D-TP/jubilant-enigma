@@ -113,3 +113,5 @@ jobs:
                   tests_fail_step: true
                   report_name: TestResults_${{ runner.os }}
                   report_title: Test Results
+                  coverage_paths: Source\Private,Source\Public
+                  coverage_report_name: CoverageResults_${{ runner.os }}

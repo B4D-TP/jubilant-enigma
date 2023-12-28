@@ -5,8 +5,6 @@ BeforeAll {
 
     Get-Module -Name $ModuleName -All | Remove-Module -Force -ErrorAction Ignore
     Import-Module -Name $ModulePath -Force -ErrorAction Stop
-
-    $NL = [System.Environment]::NewLine
 }
 
 Describe "Test-Function1" {
