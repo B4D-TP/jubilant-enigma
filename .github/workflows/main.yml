@@ -99,14 +99,23 @@ jobs:
         runs-on: windows-latest
         needs: build
         steps:
-            - name: Checkout
-              uses: actions/checkout@v4
+            - name: Download artifact Modules
+              uses: actions/download-artifact@v4
 
-            - name: Run Pester Tests
-              uses: natescherer/pester-tests-report@combined
+            - name: Display folder structure
+              run: ls -R
+
+            - name: Install required modules
+              uses: alt3/install-required-modules-action@main
+              with:
+                  dataFile: ${{github.workspace}}/RequiredModules/RequiredModules.psd1
+
+            - name: pester_tests
+              id: pester_tests
+              uses: zyborg/pester-tests-report@v1
               with:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
                   tests_fail_step: true
+                  skip_check_run: true
                   report_name: TestResults_${{ runner.os }}
-                  coverage_paths: Source\private,Source\public
-                  coverage_report_name: CoverageResults_${{ runner.os }}
+                  report_title: Test Results

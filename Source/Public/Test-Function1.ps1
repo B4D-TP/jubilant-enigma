@@ -1,4 +1,4 @@
-Function Function1 {
+Function Test-Function1 {
     <#
     .SYNOPSIS
     This is a function named Function1.
