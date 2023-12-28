@@ -99,25 +99,14 @@ jobs:
         runs-on: windows-latest
         needs: build
         steps:
-            - name: Download artifact Modules
-              uses: actions/download-artifact@v4
+            - name: Checkout
+              uses: actions/checkout@v4
 
-            - name: Confrim Modules folder exists
-              run: ls -R
-
-            - name: Install required modules
-              uses: alt3/install-required-modules-action@main
+            - name: Run Pester Tests
+              uses: natescherer/pester-tests-report@combined
               with:
-                  dataFile: ${{github.workspace}}/RequiredModules/RequiredModules.psd1
-            - uses: PoshCode/Actions/pester@v1
-              with:
-                  pesterVersion: 5.5.0
-                  codeCoveragePath: Modules/${{env.MODULE_NAME}}
-                  moduleUnderTest: ${{env.MODULE_NAME}}
-                  additionalModulePaths: ${{github.workspace}}/Modules
-
-            - name: Upload artifact PesterResults
-              uses: actions/upload-artifact@v4
-              with:
-                  name: PesterResults
-                  path: ${{github.workspace}}/*.xml
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  tests_fail_step: true
+                  report_name: TestResults_${{ runner.os }}
+                  coverage_paths: Source\private,Source\public
+                  coverage_report_name: CoverageResults_${{ runner.os }}
