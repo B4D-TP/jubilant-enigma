@@ -14,7 +14,7 @@ jobs:
         runs-on: windows-latest
         steps:
             - name: Checkout
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
               with:
                   fetch-depth: 0
 
@@ -43,25 +43,25 @@ jobs:
                   destination: ${{github.workspace}}/output
 
             - name: Upload artifact Modules
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                   name: Modules
                   path: ${{github.workspace}}/output
 
             - name: Upload artifact PesterTests
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
-                  name: PesterTests
+                  name: Tests
                   path: ${{github.workspace}}/Tests
 
             - name: Upload artifact RequiredModules
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                   name: RequiredModules
                   path: ${{github.workspace}}/Dev/RequiredModules.psd1
 
             - name: Upload artifact PSScriptAnalyzer
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                   name: PSScriptAnalyzer
                   path: ${{github.workspace}}/PSScriptAnalyzerSettings.psd1
@@ -73,7 +73,7 @@ jobs:
         needs: build
         steps:
             - name: Checkout sources
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
               with:
                   fetch-depth: 0
 
@@ -81,7 +81,7 @@ jobs:
               run: ls -R
 
             - name: Run PSScriptAnalyzer
-              uses: microsoft/psscriptanalyzer-action@v1.0
+              uses: microsoft/psscriptanalyzer-action@v1.1
               with:
                   path: .\
                   recurse: true
@@ -101,24 +101,17 @@ jobs:
         steps:
             - name: Checkout sources
               uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
 
-            - name: Install required modules
-              uses: alt3/install-required-modules-action@main
-              with:
-                  dataFile: ${{github.workspace}}/Dev/RequiredModules.psd1
+            - name: Display folder structure
+              run: ls -R
+
             - name: pester_tests
               id: pester_tests
               uses: zyborg/pester-tests-report@v1
               with:
-                  include_paths: Tests
                   github_token: ${{ secrets.GITHUB_TOKEN }}
                   tests_fail_step: true
-                  skip_check_run: true
-            - name: dump test results
-              shell: pwsh
-              run: |
-                  Write-Host 'Total Tests Executed...:  ${{ steps.pester_tests.outputs.total_count }}'
-                  Write-Host 'Total Tests PASSED.....:  ${{ steps.pester_tests.outputs.passed_count }}'
-                  Write-Host 'Total Tests FAILED.....:  ${{ steps.pester_tests.outputs.failed_count }}'
+                  report_name: TestResults_${{ runner.os }}
+                  report_title: Test Results
+                  coverage_paths: Source\Private,Source\Public
+                  coverage_report_name: CoverageResults_${{ runner.os }}

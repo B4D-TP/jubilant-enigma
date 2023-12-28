@@ -1,4 +1,4 @@
-Function Function1 {
+Function Test-Function1 {
     <#
     .SYNOPSIS
     This is a function named Function1.
@@ -26,7 +26,8 @@ Function Function1 {
     process {
         Write-Verbose "Function1 Process"
         # Call to private function
-        HelperFunction1 -Parameter1 $Parameter1
+        $retrun = HelperFunction1 -Parameter1 $Parameter1
+        return $retrun
     }
 
     end {
