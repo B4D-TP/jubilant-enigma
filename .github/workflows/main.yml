@@ -105,7 +105,7 @@ jobs:
             - name: Install required modules
               uses: alt3/install-required-modules-action@main
               with:
-                  dataFile: ${{github.workspace}}/Dev/RequiredModules.psd1
+                  dataFile: ${{github.workspace}}/RequiredModules/RequiredModules.psd1
             - uses: PoshCode/Actions/pester@v1
               with:
                   pesterVersion: 5.5.0
