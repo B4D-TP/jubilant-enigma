@@ -14,15 +14,12 @@ function HelperFunction1 {
     #>
     param(
         [Parameter(Mandatory = $true)]
-        [string]$param1,
-
-        [Parameter(Mandatory = $true)]
-        [string]$param2
+        [string]$Parameter1
     )
 
     # Here you can write the logic of your function
     # This is just a simple example
-    $result = "$param1 and $param2"
+    $result = "$Parameter1"
 
     return $result
 }
