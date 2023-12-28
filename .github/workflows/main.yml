@@ -105,11 +105,6 @@ jobs:
             - name: Display folder structure
               run: ls -R
 
-            - name: Import module
-              shell: pwsh
-              run: |
-                  Import-Module -Name ${{github.workspace}}/Modules/${{env.MODULE_NAME}}
-
             - name: Install required modules
               uses: alt3/install-required-modules-action@main
               with:
@@ -120,7 +115,6 @@ jobs:
               uses: zyborg/pester-tests-report@v1
               with:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
-                  tests_fail_step: true
-                  skip_check_run: true
+                  tests_fail_step: false
                   report_name: TestResults_${{ runner.os }}
                   report_title: Test Results

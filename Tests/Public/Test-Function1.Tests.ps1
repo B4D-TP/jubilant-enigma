@@ -1,9 +1,6 @@
 BeforeAll {
-    #Check if the module is loaded
-    if (-not (Get-Module -Name demomodule )) {
-        #Load the module
-        Import-Module -Name demomodule
-    }
+    #Module is Downloaded from Github Artifacts and in the module folder
+    Import-Module -Name $PSScriptRoot/../Modules/demomodule
 }
 
 Describe "Test-Function1" {
