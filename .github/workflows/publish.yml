@@ -45,25 +45,25 @@ jobs:
                   destination: ${{github.workspace}}/output
 
             - name: Upload artifact Modules
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                   name: Modules
                   path: ${{github.workspace}}/output
 
             - name: Upload artifact PesterTests
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                   name: PesterTests
                   path: ${{github.workspace}}/Tests
 
             - name: Upload artifact RequiredModules
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                   name: RequiredModules
                   path: ${{github.workspace}}/Dev/RequiredModules.psd1
 
             - name: Upload artifact PSScriptAnalyzer
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                   name: PSScriptAnalyzer
                   path: ${{github.workspace}}/PSScriptAnalyzerSettings.psd1
